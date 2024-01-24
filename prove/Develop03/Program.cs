@@ -1,32 +1,125 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Scripture
+{
+    private string reference;
+    private string text;
+    private HashSet<int> hiddenWords = new HashSet<int>();
+    private int revealedWordsCount = 0;
+
+    public Scripture(string reference, string text)
+    {
+        this.reference = reference;
+        this.text = text;
+    }
+
+    public string HideRandomWords()
+    {
+        string[] words = text.Split();
+        int[] hiddenWordIndices = GetRandomIndices(Math.Min(3, words.Length));
+
+        foreach (int index in hiddenWordIndices)
+        {
+            hiddenWords.Add(index);
+        }
+
+        string hiddenText = string.Join(" ", words.Select((word, index) => hiddenWords.Contains(index) ? "_____" : word));
+        return $"{reference}: {hiddenText}";
+    }
+
+    public string RevealNextWord()
+    {
+        string[] words = text.Split();
+
+        if (revealedWordsCount < words.Length)
+        {
+            string revealedText = string.Join(" ", words.Take(revealedWordsCount + 1));
+            revealedWordsCount++;
+            return $"{reference}: {revealedText}";
+        }
+        else
+        {
+            return $"{reference}: All words are already revealed.";
+        }
+    }
+
+    public bool AllWordsHidden()
+    {
+        return hiddenWords.Count == text.Split().Length;
+    }
+
+    public bool AllWordsRevealed()
+    {
+        return revealedWordsCount == text.Split().Length;
+    }
+
+    private int[] GetRandomIndices(int count)
+    {
+        Random random = new Random();
+        List<int> indices = new List<int>();
+
+        while (indices.Count < count)
+        {
+            int index = random.Next(text.Split().Length);
+            if (!indices.Contains(index))
+            {
+                indices.Add(index);
+            }
+        }
+
+        return indices.ToArray();
+    }
+}
 
 class Program
 {
     static void Main()
     {
-        // The test the constructors
-        Fraction fraction1 = new Fraction();
-        Fraction fraction2 = new Fraction(6);
-        Fraction fraction3 = new Fraction(6, 7);
+        Scripture scripture = new Scripture("John 3:16", "For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.");
 
-        // It willdisplay fractions using GetFractionString method
-        Console.WriteLine(fraction1.GetFractionString());
-        Console.WriteLine(fraction2.GetFractionString());
-        Console.WriteLine(fraction3.GetFractionString());
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("1. Hide random words");
+            Console.WriteLine("2. Reveal next word");
+            Console.WriteLine("3. Quit");
+            Console.Write("Enter your choice: ");
 
-        // It will display decimal values using GetDecimalValue method
-        Console.WriteLine(fraction1.GetDecimalValue());
-        Console.WriteLine(fraction2.GetDecimalValue());
-        Console.WriteLine(fraction3.GetDecimalValue());
+            string userInput = Console.ReadLine();
 
-        //The test getters and setters
-        fraction1.SetTop(3);
-        fraction1.SetBottom(4);
+            switch (userInput)
+            {
+                case "1":
+                    HideRandomWords(scripture);
+                    break;
+                case "2":
+                    RevealNextWord(scripture);
+                    break;
+                case "3":
+                    Console.WriteLine("Program ended.");
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice. Try again.");
+                    break;
+            }
+        }
+    }
 
-        Console.WriteLine(fraction1.GetTop());
-        Console.WriteLine(fraction1.GetBottom());
+    static void HideRandomWords(Scripture scripture)
+    {
+        Console.Clear();
+        Console.WriteLine(scripture.HideRandomWords());
+        Console.Write("Press Enter to continue...");
+        Console.ReadLine();
+    }
 
-        // It will display the fraction using GetFractionString after modifying values
-        Console.WriteLine(fraction1.GetFractionString());
+    static void RevealNextWord(Scripture scripture)
+    {
+        Console.Clear();
+        Console.WriteLine(scripture.RevealNextWord());
+        Console.Write("Press Enter to continue...");
+        Console.ReadLine();
     }
 }
