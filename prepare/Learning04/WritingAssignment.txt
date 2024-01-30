@@ -1,0 +1,23 @@
+// WritingAssignment.cs
+public class WritingAssignment : Assignment
+{
+    private string _writingPrompt;
+
+    public WritingAssignment(string studentName, string topic, string writingPrompt)
+        : base(studentName, topic)
+    {
+        _writingPrompt = writingPrompt;
+    }
+
+    public string GetWritingInformation()
+    {
+        // Access _studentName using the GetStudentName method
+        return $"{GetStudentName()} - {_writingPrompt}";
+    }
+    
+    // Public method to access the private _studentName variable
+    public string GetStudentName()
+    {
+        return _studentName;
+    }
+}
