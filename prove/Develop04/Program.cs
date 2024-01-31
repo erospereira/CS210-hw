@@ -1,9 +1,16 @@
-using System;
-
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
-        Console.WriteLine("Hello Develop04 World!");
+        // Sample usage
+        BreathingActivity breathingActivity = new BreathingActivity();
+        ReflectionActivity reflectionActivity = new ReflectionActivity();
+        ListingActivity listingActivity = new ListingActivity();
+
+        breathingActivity.PerformActivity();
+        reflectionActivity.PerformActivity();
+        listingActivity.PerformActivity();
     }
 }
+
+
